@@ -25,7 +25,7 @@ You can PROVIDE your cubit/bloc INSTANCES
 Always DOUBLE CHECK in which CONTEXT you're searching for AN INSTANCE.
 
 
-Code example for specifically providing a bloc instance to the screens:
+Code example for specifically providing a bloc instance to the screens using Generated Routing:
 ```dart
 void main() {
   runApp(MyApp());
@@ -58,4 +58,64 @@ class _MyAppState extends State<MyApp> {
     _appRouter.dispose();
     super.dispose();
   }
-}```
+}
+```
+
+Code example for Generated Routing function:
+```dart
+class AppRouter {
+  final CounterCubit _counterCubit = CounterCubit();
+
+  Route onGenerateRoute(RouteSettings routeSettings) {
+    switch (routeSettings.name) {
+      case '/':
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: _counterCubit,
+            child: HomeScreen(
+              title: 'HomeScreen',
+              color: Colors.blueAccent,
+            ),
+          ),
+        );
+
+      case '/second':
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: _counterCubit,
+            child: SecondScreen(
+              title: 'Second Screen',
+              color: Colors.redAccent,
+            ),
+          ),
+        );
+
+      case '/third':
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: _counterCubit,
+            child: ThirdScreen(
+              title: 'Third Screen',
+              color: Colors.greenAccent,
+            ),
+          ),
+        );
+
+      default:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: _counterCubit,
+            child: HomeScreen(
+              title: 'HomeScreen',
+              color: Colors.blueAccent,
+            ),
+          ),
+        );
+    }
+  }
+
+  void dispose() {
+    _counterCubit.close();
+  }
+}
+```

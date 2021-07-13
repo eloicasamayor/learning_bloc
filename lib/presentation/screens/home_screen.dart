@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_concepts/constants/enums.dart';
+import 'package:flutter_bloc_concepts/logic/cubit/internet_cubit.dart';
 import '../../logic/cubit/counter_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,6 +26,21 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            BlocBuilder<InternetCubit, InternetState>(
+              builder: (context, state) {
+                if (state is InternetConnected &&
+                    state.connectionType == ConnectionType.Wifi) {
+                  return Text('Wifi');
+                } else if (state is InternetConnected &&
+                    state.connectionType == ConnectionType.Mobile) {
+                  return Text('Mobile');
+                } else if (state is InternetDisconnected) {
+                  return Text('Disconnected');
+                }
+
+                return CircularProgressIndicator();
+              },
+            ),
             BlocConsumer<CounterCubit, CounterState>(
               listener: (context, state) {
                 if (state.wasIncremented) {
@@ -54,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               },
             ),
-            Row(
+            /* Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingActionButton(
@@ -75,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Icon(Icons.add),
                 ),
               ],
-            ),
+            ), */
             SizedBox(
               height: 24,
             ),
