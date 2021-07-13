@@ -1,6 +1,7 @@
 # flutter_bloc_concepts
 
 This is a project developed following the course ["The Best Flutter Bloc Complete Course - Visualise, Understand, Learn & Practice Bloc Concepts."](https://www.youtube.com/watch?v=THCkkQ-V1-8&t=6089s), by Flutterly.
+> by the way, I can confirm that it is the best Bloc course. 100% recommended for sure!
 
 ## Core concepts resume
 
