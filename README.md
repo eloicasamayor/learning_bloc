@@ -120,3 +120,49 @@ class AppRouter {
   }
 }
 ```
+
+## bloc-to-bloc communication
+
+Cubits and blocs emit a stream of states. Other blocs can listen an receive those states and then act appropetly. 
+There are two ways of achieving it:
+### 1. Stream Subscription
+- StreamSubscription is the foundation object from which you can listen to a stream.
+- We initialize the StreamSubscription inside the bloc or cubit constructor.
+- Since we create the StreamSubscription manually, we should also CLOSE it manually. Normally we can do it inside the close() bloc method, by calling streamSubscriptionObject.cancell().
+
+Example of Stream Subscription implementation: inside the counterCubit we subscribe to the internetCubit and call increment or decrement.
+```dart
+class CounterCubit extends Cubit<CounterState> {
+  final InternetCubit internetCubit;
+  late StreamSubscription internetStreamSubscription;
+
+  CounterCubit({required this.internetCubit})
+      : super(CounterState(counterValue: 0, wasIncremented: true)) {
+    monitorInternetCubit();
+  }
+
+  StreamSubscription<InternetState> monitorInternetCubit() {
+    return internetCubit.listen((InternetState) {
+      if (InternetState is InternetConnected &&
+          InternetState.connectionType == ConnectionType.Wifi) {
+        increment();
+      } else if (InternetState is InternetConnected &&
+          InternetState.connectionType == ConnectionType.Mobile) {
+        decrement();
+      }
+    });
+  }
+
+  void increment() => emit(
+      CounterState(counterValue: state.counterValue + 1, wasIncremented: true));
+
+  void decrement() => emit(CounterState(
+      counterValue: state.counterValue - 1, wasIncremented: false));
+
+  @override
+  Future<void> close() {
+    internetStreamSubscription.cancel();
+    return super.close();
+  }
+}
+```
