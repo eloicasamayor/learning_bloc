@@ -18,99 +18,110 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            BlocBuilder<InternetCubit, InternetState>(
-              builder: (context, state) {
-                if (state is InternetConnected &&
-                    state.connectionType == ConnectionType.Wifi) {
-                  return Text('Wifi');
-                } else if (state is InternetConnected &&
-                    state.connectionType == ConnectionType.Mobile) {
-                  return Text('Mobile');
-                } else if (state is InternetDisconnected) {
-                  return Text('Disconnected');
-                }
+    return BlocListener<InternetCubit, InternetState>(
+      listener: (context, state) {
+        if (state is InternetConnected &&
+            state.connectionType == ConnectionType.Wifi) {
+          context.read<CounterCubit>().increment();
+        } else if (state is InternetConnected &&
+            state.connectionType == ConnectionType.Mobile) {
+          context.read<CounterCubit>().decrement();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              BlocBuilder<InternetCubit, InternetState>(
+                builder: (context, state) {
+                  if (state is InternetConnected &&
+                      state.connectionType == ConnectionType.Wifi) {
+                    return Text('Wifi');
+                  } else if (state is InternetConnected &&
+                      state.connectionType == ConnectionType.Mobile) {
+                    return Text('Mobile');
+                  } else if (state is InternetDisconnected) {
+                    return Text('Disconnected');
+                  }
 
-                return CircularProgressIndicator();
-              },
-            ),
-            BlocConsumer<CounterCubit, CounterState>(
-              listener: (context, state) {
-                if (state.wasIncremented) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Incremented'),
-                    duration: Duration(milliseconds: 100),
-                  ));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Decremented'),
-                    duration: Duration(milliseconds: 100),
-                  ));
-                }
-              },
-              builder: (context, state) {
-                if (state.counterValue < 0) {
-                  print('+');
-                  return Text(
-                    'NEGATIVE  ' + state.counterValue.toString(),
-                    style: Theme.of(context).textTheme.headline4,
-                  );
-                } else {
-                  print('-');
-                  return Text(
-                    'POSITIVE  ' + state.counterValue.toString(),
-                    style: Theme.of(context).textTheme.headline4,
-                  );
-                }
-              },
-            ),
-            /* Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton(
-                  heroTag: '1',
-                  onPressed: () {
-                    BlocProvider.of<CounterCubit>(context).decrement();
-                    //context.bloc<CounterCubit>().decrement();
-                  },
-                  tooltip: 'Decrement',
-                  child: Icon(Icons.remove),
-                ),
-                FloatingActionButton(
-                  heroTag: '2',
-                  onPressed: () {
-                    BlocProvider.of<CounterCubit>(context).increment();
-                  },
-                  tooltip: 'Increment',
-                  child: Icon(Icons.add),
-                ),
-              ],
-            ), */
-            SizedBox(
-              height: 24,
-            ),
-            MaterialButton(
-              color: Colors.redAccent,
-              onPressed: () {
-                Navigator.of(context).pushNamed('/second');
-              },
-              child: Text('Go to Second Screen'),
-            ),
-            MaterialButton(
-              color: Colors.greenAccent,
-              onPressed: () {
-                Navigator.of(context).pushNamed('/third');
-              },
-              child: Text('Go to Third Screen'),
-            ),
-          ],
+                  return CircularProgressIndicator();
+                },
+              ),
+              BlocConsumer<CounterCubit, CounterState>(
+                listener: (context, state) {
+                  if (state.wasIncremented) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Incremented'),
+                      duration: Duration(milliseconds: 100),
+                    ));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Decremented'),
+                      duration: Duration(milliseconds: 100),
+                    ));
+                  }
+                },
+                builder: (context, state) {
+                  if (state.counterValue < 0) {
+                    print('+');
+                    return Text(
+                      'NEGATIVE  ' + state.counterValue.toString(),
+                      style: Theme.of(context).textTheme.headline4,
+                    );
+                  } else {
+                    print('-');
+                    return Text(
+                      'POSITIVE  ' + state.counterValue.toString(),
+                      style: Theme.of(context).textTheme.headline4,
+                    );
+                  }
+                },
+              ),
+              /* Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FloatingActionButton(
+                      heroTag: '1',
+                      onPressed: () {
+                        BlocProvider.of<CounterCubit>(context).decrement();
+                        //context.bloc<CounterCubit>().decrement();
+                      },
+                      tooltip: 'Decrement',
+                      child: Icon(Icons.remove),
+                    ),
+                    FloatingActionButton(
+                      heroTag: '2',
+                      onPressed: () {
+                        BlocProvider.of<CounterCubit>(context).increment();
+                      },
+                      tooltip: 'Increment',
+                      child: Icon(Icons.add),
+                    ),
+                  ],
+                ), */
+              SizedBox(
+                height: 24,
+              ),
+              MaterialButton(
+                color: Colors.redAccent,
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/second');
+                },
+                child: Text('Go to Second Screen'),
+              ),
+              MaterialButton(
+                color: Colors.greenAccent,
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/third');
+                },
+                child: Text('Go to Third Screen'),
+              ),
+            ],
+          ),
         ),
       ),
     );
